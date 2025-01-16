@@ -4,6 +4,7 @@ import com.springbootmicroservices.ordersservice.config.FeignClientConfig;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestHeader;
 
 /**
  * Feign client interface named {@link ProductServiceClient} for interacting with the Product Service.
@@ -18,5 +19,7 @@ public interface ProductServiceClient {
      * @param productId the product ID to validate
      */
     @GetMapping("/{productId}")
-    void verifyProductExists(@PathVariable("productId") String productId);
+    void verifyProductExists(
+            @PathVariable("productId") String productId,
+            @RequestHeader("Authorization") String authorizationHeader);
 }

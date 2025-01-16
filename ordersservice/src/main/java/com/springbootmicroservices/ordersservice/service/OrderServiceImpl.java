@@ -27,9 +27,9 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
-    public Order addProductToOrder(Long orderId, String productId, int quantity) {
+    public Order addProductToOrder(Long orderId, String productId, int quantity, String authorizationHeader) {
         // Validate the product ID with the ProductService
-        validateProductExists(productId);
+        validateProductExists(productId, authorizationHeader);
 
         Order order = findOrderOrThrow(orderId);
 
@@ -51,6 +51,14 @@ public class OrderServiceImpl implements OrderService {
         }
 
         return orderRepository.save(order);
+    }
+
+    private void validateProductExists(String productId, String authorizationHeader) {
+        try {
+            productServiceClient.verifyProductExists(productId, authorizationHeader); // Forward token
+        } catch (Exception e) {
+            throw new RuntimeException("Invalid product ID: " + productId, e);
+        }
     }
 
     @Override
@@ -80,11 +88,4 @@ public class OrderServiceImpl implements OrderService {
                 .orElseThrow(() -> new RuntimeException("Order not found with ID: " + orderId));
     }
 
-    private void validateProductExists(String productId) {
-        try {
-            productServiceClient.verifyProductExists(productId); // Call ProductServiceClient to validate
-        } catch (Exception e) {
-            throw new RuntimeException("Invalid product ID: " + productId, e);
-        }
-    }
 }

@@ -26,10 +26,12 @@ public class OrderController {
      * Add a product to an existing order.
      */
     @PostMapping("/{orderId}/add-product")
-    public Order addProduct(@PathVariable Long orderId,
-                            @RequestParam String productId,
-                            @RequestParam int quantity) {
-        return orderService.addProductToOrder(orderId, productId, quantity);
+    public Order addProduct(
+            @PathVariable Long orderId,
+            @RequestParam String productId,
+            @RequestParam int quantity,
+            @RequestHeader("Authorization") String authorizationHeader) {
+        return orderService.addProductToOrder(orderId, productId, quantity, authorizationHeader);
     }
 
     /**
